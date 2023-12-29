@@ -1,0 +1,107 @@
+---
+title: "API for trees"
+format: html
+---
+
+## Design
+
+General idea is to have a high level API for most user tasks, which wraps a lower level R6 API.
+
+The high level API should have a main `parse()` entry point that returns the root `node` object. Since `node` objects are immutable, this can be an S3 object.
+
+The library will have a few R6 classes that will mostly be invisible:
+
+-   `Language`
+
+-   `Tree` (mutable through `edit()`, very important. what happens if you edit a Tree attached to existing Nodes?)
+
+-   `Parser` (some mutable options)
+
+-   `Cursor` (fully mutable)
+
+-   `Query` (mutable in some key functions it seems)
+
+-   `Node` (immutable, probably S3 if we can?)
+
+Mostly you will call `parse()` followed by various `` node_*()` `` calls.
+
+If you need to do something fancier, like tree edits, then you need to use the R6 classes themselves. i.e. `Parser$new()`, `Parser$parse()` to get a `Tree` that you can then `Tree$edit()`.
+
+## Language
+
+Languages should probably be kept in a singleton environment in the `trees` namespace. It is probably not a good idea to give out multiple copies to the same underlying TSLanguage, although they are immutable so it may not be that bad.
+
+Maybe this could still be S3? Although unloading one language would unload others.
+
+``` r
+#| eval = FALSE
+
+# Language objects are immutable, so could be S3 objects
+
+language
+
+# Embedded R language object
+language_r() -> language
+
+# Build a language object from another source
+# (Can we look up the language name from greping for `extern const TSLanguage *tree_sitter_r(void) {` in `parser.c`?)
+language_from_url(x) -> language
+language_from_github(x) -> language
+language_from_local(x) -> language
+
+# For the rare dyn.unload() case
+# `x` can be a language object or language name
+language_unload(x) -> bool
+
+# Looking up language specific IDs and node kind names
+language_id_for_node_kind(x, kind, named) -> int
+language_node_kind_for_id(x, id) -> string
+
+# What version of the API was this built with
+language_version(x)
+
+# Various other language metadata accessors
+language_*()
+```
+
+## Parser
+
+Can we avoid exposing the parser API at all? It looks like it is mutable but could be captured all in one constructor object.
+
+`parse()` should convert `x` (a string) to UTF-8 before passing to C, so C function can assume UTF-8 encoding.
+
+``` r
+parse_text(
+    x,
+    ...,
+    language = NULL
+)
+```
+
+Should return a Tree object
+
+Don't think we need to worry about logger, cancellation flag, included ranges, etc, but if we needed to they could go in the constructor
+
+## Tree
+
+``` r
+tree_language(x) -> language
+tree_root_node(x) -> node
+tree_root_node_with_offset(x, offset) -> node
+
+# makes use of tree_copy() under the hood to retain immutability?
+# assuming that works (it only does a shallow copy so maybe not?)
+tree_edit(x, edit)
+```
+
+## Edit
+
+``` r
+# all the fields required to make a tree_edit(), or just inline them into tree_edit()
+# if we think this is the only place it will be used
+new_edit(...)
+```
+
+## Cursor
+
+Don't need this for now, but if we did add this then it would use an R6 class

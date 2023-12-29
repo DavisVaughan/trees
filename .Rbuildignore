@@ -1,0 +1,14 @@
+^README\.Rmd$
+^src/tree-sitter/test
+^src/tree-sitter/\.
+^src/tree-sitter/.+/\.
+^\.cache$
+^compile_commands\.json$
+^script.R$
+^LICENSE\.md$
+^codecov\.yml$
+^\.github$
+^\.vscode$
+^debug$
+^api.qmd$
+^.clang-format$

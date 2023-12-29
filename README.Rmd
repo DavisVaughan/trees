@@ -1,0 +1,72 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# trees
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of trees is to ...
+
+## Installation
+
+You can install the development version of trees like so:
+
+``` r
+# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(trees)
+
+language <- language_r()
+language_node_kind_for_id(language, 3L)
+
+parser <- new_parser()
+parser_set_language(parser, language)
+
+tree <- parser_parse(parser, "x + 1")
+
+root_node <- tree_root_node(tree)
+
+node_as_text(root_node)
+```
+
+```{r cars}
+sources <- language_download("tree-sitter/tree-sitter-python", "master")
+dll_info <- language_build(sources)
+
+language <- language_get("tree_sitter_python")
+language_node_kind_for_id(language, 3L)
+
+parser <- new_parser()
+parser_set_language(parser, language)
+
+parser_parse(parser, "x + 1")
+```
+
+You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
+
+You can also embed plots, for example:
+
+```{r pressure, echo = FALSE}
+plot(pressure)
+```
+
+In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
