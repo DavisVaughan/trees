@@ -135,7 +135,7 @@ language_from_url <- function(url) {
     untar <- tempfile("untar", tmpdir = dir)
 
     # Download into `trees/tar`
-    download.file(url = url, destfile = tar)
+    utils::download.file(url = url, destfile = tar)
 
     # Unpack into `trees/untar`
     untar(tar, exdir = untar)
