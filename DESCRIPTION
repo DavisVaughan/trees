@@ -15,3 +15,5 @@ Imports:
     cli,
     R6,
     rlang
+URL: https://github.com/DavisVaughan/trees
+BugReports: https://github.com/DavisVaughan/trees/issues
