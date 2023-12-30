@@ -75,12 +75,18 @@ parse_text(
     x,
     ...,
     language = NULL
-)
+) -> root-node
 ```
 
 Should return a Tree object
 
 Don't think we need to worry about logger, cancellation flag, included ranges, etc, but if we needed to they could go in the constructor
+
+This is where you'd supply an edited tree too.
+
+``` r
+parser_parse(x, text, ..., tree = NULL) -> tree
+```
 
 ## Tree
 
@@ -89,8 +95,8 @@ tree_language(x) -> language
 tree_root_node(x) -> node
 tree_root_node_with_offset(x, offset) -> node
 
-# makes use of tree_copy() under the hood to retain immutability?
-# assuming that works (it only does a shallow copy so maybe not?)
+# this would invalidate nodes that currently exist that are tied to `x`
+# should bump an internal `id` integer counter by 1
 tree_edit(x, edit)
 ```
 
@@ -100,6 +106,25 @@ tree_edit(x, edit)
 # all the fields required to make a tree_edit(), or just inline them into tree_edit()
 # if we think this is the only place it will be used
 new_edit(...)
+```
+
+## Node
+
+S3 object that is tied to a particular Tree
+
+If the Tree is edited, the Node becomes invalid unless you do `node_edit()` as well to keep them in sync. Can we think of some way to ensure that we error if a node that is out of sync with the Tree is used?
+
+``` r
+new_node(pointer, tree)
+```
+
+``` r
+# called before each node operation
+node_check_tree(x) {
+    if (x$id != x$tree$id) {
+        stop("out of sync")
+    }
+}
 ```
 
 ## Cursor

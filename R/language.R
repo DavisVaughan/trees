@@ -20,6 +20,10 @@ Language <- R6::R6Class(
             language_unload(self, private)
         },
 
+        pointer = function() {
+            language_pointer(self, private)
+        },
+
         name = function() {
             language_name(self, private)
         },
@@ -96,6 +100,10 @@ language_id_for_node_kind <- function(self, private, kind, named) {
 language_node_kind_for_id <- function(self, private, id) {
     pointer <- private$.pointer
     .Call(ffi_r_ts_language_node_kind_for_id, pointer, id)
+}
+
+language_pointer <- function(self, private) {
+    private$.pointer
 }
 
 language_name <- function(self, private) {
