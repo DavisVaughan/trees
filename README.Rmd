@@ -25,7 +25,7 @@ The goal of trees is to ...
 You can install the development version of trees like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+pak::pak("DavisVaughan/trees")
 ```
 
 ## Example
@@ -36,37 +36,25 @@ This is a basic example which shows you how to solve a common problem:
 library(trees)
 
 language <- language_r()
-language_node_kind_for_id(language, 3L)
+language$node_kind_for_id(3L)
 
-parser <- new_parser()
-parser_set_language(parser, language)
+parser <- Parser$new(language)
+tree <- parser$parse("x + 1")
 
-tree <- parser_parse(parser, "x + 1")
+node <- tree$root_node()
+node
 
-root_node <- tree_root_node(tree)
-
-node_as_text(root_node)
+node |>
+  node_child(0) |>
+  node_children()
 ```
 
 ```{r cars}
-sources <- language_download("tree-sitter/tree-sitter-python", "master")
-dll_info <- language_build(sources)
+language <- language_from_github("tree-sitter/tree-sitter-python", branch = "master")
+language$node_kind_for_id(3L)
 
-language <- language_get("tree_sitter_python")
-language_node_kind_for_id(language, 3L)
+parser <- Parser$new(language)
+tree <- parser$parse("x + 1")
 
-parser <- new_parser()
-parser_set_language(parser, language)
-
-parser_parse(parser, "x + 1")
+node_as_text(tree$root_node())
 ```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
